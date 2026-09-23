@@ -46,6 +46,8 @@
             dgvGoals = new DataGridView();
             btnLogProgress = new Button();
             btnDeleteGoal = new Button();
+            lblStatusFilter = new Label();
+            cmbStatusFilter = new ComboBox();
             grpGoalDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numTargetValue).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numStartValue).BeginInit();
@@ -62,6 +64,7 @@
             lblTitle.Size = new Size(408, 37);
             lblTitle.TabIndex = 0;
             lblTitle.Text = "Fit Track – Fitness Goal Tracker";
+            lblTitle.Click += lblTitle_Click;
             // 
             // grpGoalDetails
             // 
@@ -239,11 +242,33 @@
             btnDeleteGoal.UseVisualStyleBackColor = true;
             btnDeleteGoal.Click += btnDeleteGoal_Click;
             // 
+            // lblStatusFilter
+            // 
+            lblStatusFilter.AutoSize = true;
+            lblStatusFilter.Location = new Point(619, 67);
+            lblStatusFilter.Name = "lblStatusFilter";
+            lblStatusFilter.Size = new Size(70, 15);
+            lblStatusFilter.TabIndex = 5;
+            lblStatusFilter.Text = "Show goals:";
+            // 
+            // cmbStatusFilter
+            // 
+            cmbStatusFilter.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbStatusFilter.FormattingEnabled = true;
+            cmbStatusFilter.Items.AddRange(new object[] { "All", "Active", "Completed" });
+            cmbStatusFilter.Location = new Point(710, 64);
+            cmbStatusFilter.Name = "cmbStatusFilter";
+            cmbStatusFilter.Size = new Size(200, 23);
+            cmbStatusFilter.TabIndex = 6;
+            cmbStatusFilter.SelectedIndexChanged += cmbStatusFilter_SelectedIndexChanged;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1326, 661);
+            Controls.Add(cmbStatusFilter);
+            Controls.Add(lblStatusFilter);
             Controls.Add(btnDeleteGoal);
             Controls.Add(btnLogProgress);
             Controls.Add(grpGoals);
@@ -284,5 +309,7 @@
         private DataGridView dgvGoals;
         private Button btnLogProgress;
         private Button btnDeleteGoal;
+        private Label lblStatusFilter;
+        private ComboBox cmbStatusFilter;
     }
 }

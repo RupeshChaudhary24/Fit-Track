@@ -2,29 +2,55 @@
 using FitTrack.Storage;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace FitTrack.Forms
 {
     public partial class MainForm : Form
     {
-        private List<FitnessGoal> goals;
+        private List<FitnessGoal> goals = new();
 
         public MainForm()
         {
             InitializeComponent();
 
             goals = GoalStorage.LoadGoals();
+
+            cmbStatusFilter.SelectedIndex = 0;
             RefreshGrid();
         }
 
         private void RefreshGrid()
         {
+            IEnumerable<FitnessGoal> visibleGoals = goals;
+
+            string filter =
+                cmbStatusFilter.SelectedItem?.ToString() ?? "All";
+
+            if (filter == "Active")
+            {
+                visibleGoals = goals.Where(goal => !goal.IsCompleted);
+            }
+            else if (filter == "Completed")
+            {
+                visibleGoals = goals.Where(goal => goal.IsCompleted);
+            }
+
             dgvGoals.DataSource = null;
-            dgvGoals.DataSource = goals;
+            dgvGoals.DataSource = visibleGoals.ToList();
+
+            dgvGoals.ClearSelection();
+            dgvGoals.CurrentCell = null;
         }
 
-        private void btnAddGoal_Click(object sender, EventArgs e)
+        private void cmbStatusFilter_SelectedIndexChanged(
+            object? sender, EventArgs e)
+        {
+            RefreshGrid();
+        }
+
+        private void btnAddGoal_Click(object? sender, EventArgs e)
         {
             if (cmbGoalType.SelectedIndex == -1)
             {
@@ -95,21 +121,19 @@ namespace FitTrack.Forms
             cmbGoalType.Focus();
         }
 
-        private void btnClear_Click(object sender, EventArgs e)
+        private void btnClear_Click(object? sender, EventArgs e)
         {
             ClearGoalFields();
         }
 
-        private void btnDeleteGoal_Click(object sender, EventArgs e)
+        private void btnDeleteGoal_Click(object? sender, EventArgs e)
         {
-            if (dgvGoals.CurrentRow == null)
+            if (dgvGoals.CurrentRow?.DataBoundItem
+                is not FitnessGoal selectedGoal)
             {
                 MessageBox.Show("Please select a goal.");
                 return;
             }
-
-            FitnessGoal selectedGoal =
-                (FitnessGoal)dgvGoals.CurrentRow.DataBoundItem;
 
             DialogResult answer = MessageBox.Show(
                 "Are you sure you want to delete this goal?",
@@ -127,20 +151,18 @@ namespace FitTrack.Forms
             }
         }
 
-        private void btnLogProgress_Click(object sender, EventArgs e)
+        private void btnLogProgress_Click(object? sender, EventArgs e)
         {
-            if (dgvGoals.CurrentRow == null)
+            if (dgvGoals.CurrentRow?.DataBoundItem
+                is not FitnessGoal selectedGoal)
             {
                 MessageBox.Show("Please select a goal.");
                 return;
             }
 
-            FitnessGoal selectedGoal =
-                (FitnessGoal)dgvGoals.CurrentRow.DataBoundItem;
-
             using (LogProgressForm progressForm = new LogProgressForm())
             {
-                if (progressForm.ShowDialog() == DialogResult.OK)
+                if (progressForm.ShowDialog(this) == DialogResult.OK)
                 {
                     if (selectedGoal.ProgressEntries == null)
                     {
@@ -164,8 +186,13 @@ namespace FitTrack.Forms
             }
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void MainForm_Load(object? sender, EventArgs e)
         {
+        }
+
+        private void lblTitle_Click(object? sender, EventArgs e)
+        {
+          
         }
     }
 }
