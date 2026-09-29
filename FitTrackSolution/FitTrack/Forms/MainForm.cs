@@ -186,13 +186,28 @@ namespace FitTrack.Forms
             }
         }
 
+        private void btnViewHistory_Click(object? sender, EventArgs e)
+        {
+            if (dgvGoals.CurrentRow?.DataBoundItem
+                is not FitnessGoal selectedGoal)
+            {
+                MessageBox.Show("Please select a goal.");
+                return;
+            }
+
+            using (ProgressHistoryForm historyForm =
+                new ProgressHistoryForm(selectedGoal))
+            {
+                historyForm.ShowDialog(this);
+            }
+        }
+
         private void MainForm_Load(object? sender, EventArgs e)
         {
         }
 
         private void lblTitle_Click(object? sender, EventArgs e)
         {
-          
         }
     }
 }
