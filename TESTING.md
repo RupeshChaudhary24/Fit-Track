@@ -12,7 +12,15 @@ These tests were completed manually in the Windows Forms application.
 | Clear input fields | Enter goal details and select Clear | Goal type, name and numeric fields reset | The input controls reset correctly | Pass |
 | Missing goal selection | Select no goal and click Log Progress | A message asks the user to select a goal and the app continues running | The selection message appeared and the app remained usable | Pass |
 | Delete goal | Select a goal, click Delete Goal and confirm | The goal is removed and remains deleted after saving | The selected goal was removed correctly | Pass |
+| Progress history | Select a goal and click View History | The history window opens for the selected goal | The correct history window opened | Pass |
+| No history | Open history for a goal with no progress | A no-history message appears | The message appeared correctly | Pass |
+| History order | Add several progress entries and open history | Entries appear in date order | Entries appeared from oldest to newest | Pass |
+| History values | Check the dates and recorded values | Correct dates and values are displayed | All details displayed correctly | Pass |
+| Close history | Click Close or press Escape | The history window closes | The window closed correctly | Pass |
 
 ## Result
 
 The tested goal creation, progress calculation, completion tracking, JSON persistence, input clearing, selection handling and deletion workflows behaved as expected during manual testing.
+## Result
+
+All tested features worked correctly. Goal creation, progress updates, filtering, saving, deletion and progress history passed the manual tests.
