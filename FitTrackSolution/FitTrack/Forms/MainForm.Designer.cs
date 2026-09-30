@@ -49,6 +49,7 @@
             lblStatusFilter = new Label();
             cmbStatusFilter = new ComboBox();
             btnViewHistory = new Button();
+            btnEditGoal = new Button();
             grpGoalDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)numTargetValue).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numStartValue).BeginInit();
@@ -273,11 +274,22 @@
             btnViewHistory.UseVisualStyleBackColor = true;
             btnViewHistory.Click += btnViewHistory_Click;
             // 
+            // btnEditGoal
+            // 
+            btnEditGoal.Location = new Point(452, 471);
+            btnEditGoal.Name = "btnEditGoal";
+            btnEditGoal.Size = new Size(114, 39);
+            btnEditGoal.TabIndex = 8;
+            btnEditGoal.Text = "Edit Goal";
+            btnEditGoal.UseVisualStyleBackColor = true;
+            btnEditGoal.Click += btnEditGoal_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1326, 661);
+            Controls.Add(btnEditGoal);
             Controls.Add(btnViewHistory);
             Controls.Add(cmbStatusFilter);
             Controls.Add(lblStatusFilter);
@@ -324,5 +336,6 @@
         private Label lblStatusFilter;
         private ComboBox cmbStatusFilter;
         private Button btnViewHistory;
+        private Button btnEditGoal;
     }
 }

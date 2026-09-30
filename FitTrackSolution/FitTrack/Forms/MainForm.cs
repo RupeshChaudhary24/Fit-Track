@@ -202,6 +202,56 @@ namespace FitTrack.Forms
             }
         }
 
+        private void btnEditGoal_Click(object sender, EventArgs e)
+        {
+            if (dgvGoals.CurrentRow?.DataBoundItem
+                is not FitnessGoal selectedGoal)
+            {
+                MessageBox.Show("Please select a goal.");
+                return;
+            }
+
+            using (EditGoalForm editForm = new EditGoalForm(selectedGoal))
+            {
+                if (editForm.ShowDialog(this) != DialogResult.OK)
+                {
+                    return;
+                }
+
+                string oldName = selectedGoal.Name;
+                decimal oldStartValue = selectedGoal.StartValue;
+                decimal oldTargetValue = selectedGoal.TargetValue;
+                DateTime oldTargetDate = selectedGoal.TargetDate;
+
+                selectedGoal.Name = editForm.GoalName;
+                selectedGoal.StartValue = editForm.StartValue;
+                selectedGoal.TargetValue = editForm.TargetValue;
+                selectedGoal.TargetDate = editForm.TargetDate;
+
+                try
+                {
+                    GoalStorage.SaveGoals(goals);
+                }
+                catch (Exception ex)
+                {
+                    selectedGoal.Name = oldName;
+                    selectedGoal.StartValue = oldStartValue;
+                    selectedGoal.TargetValue = oldTargetValue;
+                    selectedGoal.TargetDate = oldTargetDate;
+
+                    MessageBox.Show(
+                        "The goal could not be saved: " + ex.Message,
+                        "Save Error",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return;
+                }
+
+                RefreshGrid();
+                MessageBox.Show("Goal updated successfully.");
+            }
+        }
+
         private void MainForm_Load(object? sender, EventArgs e)
         {
         }
