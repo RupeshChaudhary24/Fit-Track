@@ -17,10 +17,11 @@ These tests were completed manually in the Windows Forms application.
 | History order | Add several progress entries and open history | Entries appear in date order | Entries appeared from oldest to newest | Pass |
 | History values | Check the dates and recorded values | Correct dates and values are displayed | All details displayed correctly | Pass |
 | Close history | Click Close or press Escape | The history window closes | The window closed correctly | Pass |
+| JSON backup | Save a goal and check the app folder | A backup file is created | goals.json.bak appeared in the folder | Pass |
+| Damaged JSON | Replace goals.json with invalid text and start FitTrack | An error appears and the goal window does not open | The startup error appeared and FitTrack did not load an empty goal list | Pass |
+| Restore saved goals | Replace the damaged file with the good copy and start FitTrack | Saved goals appear again | The goals loaded correctly | Pass |
 
 ## Result
-
 The tested goal creation, progress calculation, completion tracking, JSON persistence, input clearing, selection handling and deletion workflows behaved as expected during manual testing.
-## Result
-
 All tested features worked correctly. Goal creation, progress updates, filtering, saving, deletion and progress history passed the manual tests.
+The damaged JSON test showed a startup error without opening an empty goal list. After I restored the original file, my saved goals loaded correctly.
