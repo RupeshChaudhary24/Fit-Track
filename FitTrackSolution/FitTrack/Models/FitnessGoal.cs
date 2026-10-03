@@ -8,7 +8,7 @@ namespace FitTrack.Models
     [JsonDerivedType(typeof(EnduranceGoal), "Endurance")]
     public abstract class FitnessGoal
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
         public string Name { get; set; } = "";
         public decimal StartValue { get; set; }
         public decimal TargetValue { get; set; }

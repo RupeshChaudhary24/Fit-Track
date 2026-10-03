@@ -183,7 +183,7 @@
             // 
             cmbGoalType.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbGoalType.FormattingEnabled = true;
-            cmbGoalType.Items.AddRange(new object[] { "Weight Loss", "", "Fat Loss", "", "Strength", "", "Endurance" });
+            cmbGoalType.Items.AddRange(new object[] { "Weight Loss", "Fat Loss", "Strength", "Endurance" });
             cmbGoalType.Location = new Point(172, 42);
             cmbGoalType.Name = "cmbGoalType";
             cmbGoalType.Size = new Size(200, 23);

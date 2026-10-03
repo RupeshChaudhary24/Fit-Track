@@ -52,21 +52,32 @@ namespace FitTrack.Forms
 
         private void btnAddGoal_Click(object? sender, EventArgs e)
         {
-            if (cmbGoalType.SelectedIndex == -1)
+            if (cmbGoalType.SelectedIndex == -1 ||
+                string.IsNullOrWhiteSpace(cmbGoalType.Text))
             {
                 MessageBox.Show("Please select a goal type.");
+                cmbGoalType.Focus();
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(txtGoalName.Text))
             {
                 MessageBox.Show("Please enter a goal name.");
+                txtGoalName.Focus();
+                return;
+            }
+
+            if (numStartValue.Value <= 0)
+            {
+                MessageBox.Show("Please enter a start value greater than zero.");
+                numStartValue.Focus();
                 return;
             }
 
             if (numTargetValue.Value <= 0)
             {
-                MessageBox.Show("Please enter a valid target value.");
+                MessageBox.Show("Please enter a target value greater than zero.");
+                numTargetValue.Focus();
                 return;
             }
 
@@ -92,10 +103,40 @@ namespace FitTrack.Forms
 
                 default:
                     MessageBox.Show("Please select a valid goal type.");
+                    cmbGoalType.Focus();
                     return;
             }
 
-            goal.Id = Guid.NewGuid();
+            bool isDecreaseGoal =
+                goal is WeightLossGoal || goal is FatLossGoal;
+
+            if (isDecreaseGoal &&
+                numTargetValue.Value >= numStartValue.Value)
+            {
+                MessageBox.Show(
+                    "For weight or fat loss, the target must be lower than the start value.");
+                numTargetValue.Focus();
+                return;
+            }
+
+            if (!isDecreaseGoal &&
+                numTargetValue.Value <= numStartValue.Value)
+            {
+                MessageBox.Show(
+                    "For strength or endurance, the target must be higher than the start value.");
+                numTargetValue.Focus();
+                return;
+            }
+
+            if (dtpGoalTargetDate.Value.Date < DateTime.Today)
+            {
+                MessageBox.Show(
+                    "The target date cannot be before the start date.");
+                dtpGoalTargetDate.Focus();
+                return;
+            }
+
+            goal.Id = GoalStorage.GetNextId();
             goal.Name = txtGoalName.Text.Trim();
             goal.StartValue = numStartValue.Value;
             goal.TargetValue = numTargetValue.Value;
@@ -144,13 +185,13 @@ namespace FitTrack.Forms
             if (answer == DialogResult.Yes)
             {
                 goals.Remove(selectedGoal);
+                GoalStorage.ResequenceIds(goals);
                 GoalStorage.SaveGoals(goals);
-                RefreshGrid();
 
+                RefreshGrid();
                 MessageBox.Show("Goal deleted successfully.");
             }
         }
-
         private void btnLogProgress_Click(object? sender, EventArgs e)
         {
             if (dgvGoals.CurrentRow?.DataBoundItem
@@ -160,7 +201,8 @@ namespace FitTrack.Forms
                 return;
             }
 
-            using (LogProgressForm progressForm = new LogProgressForm())
+            using (LogProgressForm progressForm =
+                new LogProgressForm(selectedGoal.StartDate))
             {
                 if (progressForm.ShowDialog(this) == DialogResult.OK)
                 {

@@ -5,6 +5,8 @@ namespace FitTrack.Forms
 {
     public partial class LogProgressForm : Form
     {
+        private readonly DateTime goalStartDate;
+
         public DateTime EntryDate
         {
             get
@@ -21,9 +23,11 @@ namespace FitTrack.Forms
             }
         }
 
-        public LogProgressForm()
+        public LogProgressForm(DateTime goalStartDate)
         {
             InitializeComponent();
+
+            this.goalStartDate = goalStartDate.Date;
             dtpEntryDate.Value = DateTime.Today;
         }
 
@@ -32,11 +36,36 @@ namespace FitTrack.Forms
             if (numLoggedValue.Value <= 0)
             {
                 MessageBox.Show(
-                    "Please enter a progress value.",
-                    "Missing Value",
+                    "Please enter a progress value greater than zero.",
+                    "Invalid Value",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Warning);
 
+                numLoggedValue.Focus();
+                return;
+            }
+
+            if (EntryDate < goalStartDate)
+            {
+                MessageBox.Show(
+                    "The progress date cannot be before the goal's start date.",
+                    "Invalid Date",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                dtpEntryDate.Focus();
+                return;
+            }
+
+            if (EntryDate > DateTime.Today)
+            {
+                MessageBox.Show(
+                    "The progress date cannot be in the future.",
+                    "Invalid Date",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+
+                dtpEntryDate.Focus();
                 return;
             }
 
