@@ -9,12 +9,15 @@ namespace FitTrack.Storage
         private static readonly string FilePath =
             Path.Combine(AppContext.BaseDirectory, "goals.json");
 
+        private static readonly string BackupPath = FilePath + ".bak";
+
         private static readonly JsonSerializerOptions Options = new()
         {
             WriteIndented = true
         };
 
         private static int nextId = 1;
+        private static bool loadedExistingFile;
 
         public sealed class GoalFile
         {
@@ -44,10 +47,20 @@ namespace FitTrack.Storage
         {
             if (!File.Exists(FilePath))
             {
+                if (File.Exists(BackupPath) ||
+                    File.Exists(FilePath + ".guid-backup.json") ||
+                    File.Exists(FilePath + ".tmp"))
+                {
+                    throw new InvalidDataException(
+                        "goals.json is missing, but a saved copy exists. Restore the file before using FitTrack.");
+                }
+
+                loadedExistingFile = false;
                 nextId = 1;
                 return new List<FitnessGoal>();
             }
 
+            loadedExistingFile = true;
             string json = File.ReadAllText(FilePath);
 
             using JsonDocument document = JsonDocument.Parse(json);
@@ -133,6 +146,12 @@ namespace FitTrack.Storage
 
         public static void SaveGoals(List<FitnessGoal> goals)
         {
+            if (loadedExistingFile && !File.Exists(FilePath))
+            {
+                throw new IOException(
+                    "goals.json has disappeared. Saving was stopped to protect the existing goals.");
+            }
+
             ValidateGoals(goals);
 
             int afterHighestId = goals.Count == 0
@@ -151,7 +170,12 @@ namespace FitTrack.Storage
             string temporaryPath = FilePath + ".tmp";
 
             File.WriteAllText(temporaryPath, json);
+
+            if (File.Exists(FilePath))
+                File.Copy(FilePath, BackupPath, true);
+
             File.Move(temporaryPath, FilePath, true);
+            loadedExistingFile = true;
         }
 
         private static void ValidateGoals(List<FitnessGoal>? goals)

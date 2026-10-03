@@ -2,16 +2,31 @@ namespace FitTrack
 {
     internal static class Program
     {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new Forms.MainForm());
+
+            Forms.MainForm mainForm;
+
+            try
+            {
+                mainForm = new Forms.MainForm();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "FitTrack could not open safely, so it will close without replacing your saved goals.\n\n" +
+                    "Details: " + ex.Message + "\n\n" +
+                    "Check goals.json and its backup before trying again.",
+                    "FitTrack Startup Error",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+
+                return;
+            }
+
+            Application.Run(mainForm);
         }
     }
 }
